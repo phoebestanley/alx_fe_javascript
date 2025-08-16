@@ -2,28 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dynamic Quote Generator with Categories</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Dynamic Quote Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #2c3e50; }
+    #notification {
+      background: #27ae60; color: white;
+      padding: 10px; margin: 10px 0;
+      border-radius: 5px; display: none;
+    }
+    #conflictBox {
+      background: #f1c40f; padding: 15px;
+      border: 2px solid #e67e22;
+      margin: 10px 0; display: none;
+    }
+    #quoteList { margin-top: 15px; }
+    li { margin-bottom: 5px; }
+    form { margin: 15px 0; }
+    input, select, button {
+      margin: 5px; padding: 5px;
+    }
+  </style>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Add Quote Section -->
-  <div>
-    <input type="text" id="quoteText" placeholder="Enter a quote" />
-    <input type="text" id="quoteCategory" placeholder="Enter category" />
-    <button onclick="addQuote()">Add Quote</button>
-  </div>
+  <!-- Notifications -->
+  <div id="notification"></div>
+  <div id="conflictBox"></div>
+
+  <!-- Add Quote Form -->
+  <form id="addQuoteForm">
+    <input type="text" id="quoteText" placeholder="Enter quote" required>
+    <input type="text" id="quoteCategory" placeholder="Enter category" required>
+    <button type="submit">Add Quote</button>
+  </form>
 
   <!-- Category Filter -->
-  <div>
-    <label for="categoryFilter">Filter by Category:</label>
-    <select id="categoryFilter" onchange="filterQuotes()">
-      <option value="all">All Categories</option>
-    </select>
-  </div>
+  <label for="categoryFilter">Filter by category: </label>
+  <select id="categoryFilter"></select>
 
-  <!-- Display Quotes -->
+  <!-- Quote List -->
   <ul id="quoteList"></ul>
 
   <script src="script.js"></script>
