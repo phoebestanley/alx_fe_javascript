@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Quote Generator with Categories</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Add New Quote -->
+  <!-- Add Quote Section -->
   <div>
-    <input type="text" id="quoteInput" placeholder="Enter a quote">
-    <input type="text" id="authorInput" placeholder="Enter author">
-    <input type="text" id="categoryInput" placeholder="Enter category">
+    <input type="text" id="quoteText" placeholder="Enter a quote" />
+    <input type="text" id="quoteCategory" placeholder="Enter category" />
     <button onclick="addQuote()">Add Quote</button>
   </div>
 
@@ -25,7 +24,7 @@
   </div>
 
   <!-- Display Quotes -->
-  <div id="quotesList"></div>
+  <ul id="quoteList"></ul>
 
   <script src="script.js"></script>
 </body>
