@@ -3,58 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dynamic Quote Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f4f4f4;
-    }
-    #quoteDisplay {
-      background: white;
-      padding: 15px;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      font-size: 1.2em;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    form, .controls {
-      margin-bottom: 15px;
-    }
-    input, select, button {
-      margin: 5px;
-      padding: 8px;
-      font-size: 1em;
-    }
-  </style>
+  <title>Dynamic Quote Generator with Categories</title>
 </head>
 <body>
-
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Display area -->
-  <div id="quoteDisplay">Click "Show Random Quote" to begin</div>
+  <!-- Add New Quote -->
+  <div>
+    <input type="text" id="quoteInput" placeholder="Enter a quote">
+    <input type="text" id="authorInput" placeholder="Enter author">
+    <input type="text" id="categoryInput" placeholder="Enter category">
+    <button onclick="addQuote()">Add Quote</button>
+  </div>
 
-  <!-- Controls -->
-  <div class="controls">
-    <button onclick="displayRandomQuote()">Show Random Quote</button>
-    <select id="categoryFilter" onchange="filterByCategory()">
+  <!-- Category Filter -->
+  <div>
+    <label for="categoryFilter">Filter by Category:</label>
+    <select id="categoryFilter" onchange="filterQuotes()">
       <option value="all">All Categories</option>
     </select>
   </div>
 
-  <!-- Add Quote -->
-  <form id="addQuoteForm">
-    <input type="text" id="quoteText" placeholder="Enter quote" required>
-    <input type="text" id="quoteCategory" placeholder="Enter category" required>
-    <button type="submit">Add Quote</button>
-  </form>
-
-  <!-- Import/Export -->
-  <div class="controls">
-    <button onclick="exportToJsonFile()">Export Quotes</button>
-    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)">
-  </div>
+  <!-- Display Quotes -->
+  <div id="quotesList"></div>
 
   <script src="script.js"></script>
 </body>
