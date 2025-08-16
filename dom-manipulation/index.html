@@ -4,23 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Quote Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    #quoteDisplay {
+      background: white;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-size: 1.2em;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    form, .controls {
+      margin-bottom: 15px;
+    }
+    input, select, button {
+      margin: 5px;
+      padding: 8px;
+      font-size: 1em;
+    }
+  </style>
 </head>
 <body>
+
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Category Selector -->
-  <label for="categorySelect">Choose a category:</label>
-  <select id="categorySelect"></select>
-  
-  <!-- Quote Display -->
-  <div id="quoteDisplay"></div>
-  <button id="newQuote">Show New Quote</button>
+  <!-- Display area -->
+  <div id="quoteDisplay">Click "Show Random Quote" to begin</div>
 
-  <!-- Add Quote Form -->
-  <div>
-    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-    <button onclick="addQuote()">Add Quote</button>
+  <!-- Controls -->
+  <div class="controls">
+    <button onclick="displayRandomQuote()">Show Random Quote</button>
+    <select id="categoryFilter" onchange="filterByCategory()">
+      <option value="all">All Categories</option>
+    </select>
+  </div>
+
+  <!-- Add Quote -->
+  <form id="addQuoteForm">
+    <input type="text" id="quoteText" placeholder="Enter quote" required>
+    <input type="text" id="quoteCategory" placeholder="Enter category" required>
+    <button type="submit">Add Quote</button>
+  </form>
+
+  <!-- Import/Export -->
+  <div class="controls">
+    <button onclick="exportToJsonFile()">Export Quotes</button>
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)">
   </div>
 
   <script src="script.js"></script>
