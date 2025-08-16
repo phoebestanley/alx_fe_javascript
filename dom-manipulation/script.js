@@ -6,14 +6,14 @@ function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
-// Populate categories dynamically
+// Populate categories dynamically in the dropdown
 function populateCategories() {
   const categoryFilter = document.getElementById("categoryFilter");
 
-  // Get unique categories
+  // Get unique categories from quotes
   const categories = [...new Set(quotes.map(q => q.category))];
 
-  // Reset dropdown (keep "All Categories")
+  // Reset dropdown (always keep "All Categories" option)
   categoryFilter.innerHTML = '<option value="all">All Categories</option>';
 
   categories.forEach(category => {
@@ -28,19 +28,21 @@ function populateCategories() {
   categoryFilter.value = lastSelected;
 }
 
-// Display quotes
-function displayQuotes(filteredQuotes = quotes) {
-  const quoteList = document.getElementById("quoteList");
-  quoteList.innerHTML = "";
+// Display ONE random quote in the quoteDisplay container
+function displayRandomQuote(filteredQuotes = quotes) {
+  const quoteDisplay = document.getElementById("quoteDisplay");
+  quoteDisplay.innerHTML = "";
 
-  filteredQuotes.forEach((quote, index) => {
-    const li = document.createElement("li");
-    li.textContent = `"${quote.text}" - [${quote.category}]`;
-    quoteList.appendChild(li);
-  });
+  if (filteredQuotes.length > 0) {
+    const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+    const randomQuote = filteredQuotes[randomIndex];
+    quoteDisplay.textContent = `"${randomQuote.text}" - [${randomQuote.category}]`;
+  } else {
+    quoteDisplay.textContent = "No quotes available in this category.";
+  }
 }
 
-// Add a new quote
+// Add a new quote with text + category
 function addQuote() {
   const text = document.getElementById("quoteText").value.trim();
   const category = document.getElementById("quoteCategory").value.trim();
@@ -49,7 +51,7 @@ function addQuote() {
     quotes.push({ text, category });
     saveQuotes();
     populateCategories();
-    filterQuotes(); // refresh display
+    filterQuotes(); // refresh random display
     document.getElementById("quoteText").value = "";
     document.getElementById("quoteCategory").value = "";
   } else {
@@ -57,23 +59,24 @@ function addQuote() {
   }
 }
 
-// Filter quotes based on selected category
+// Filter quotes by category and display a random one
 function filterQuotes() {
   const selectedCategory = document.getElementById("categoryFilter").value;
   localStorage.setItem("selectedCategory", selectedCategory);
 
   if (selectedCategory === "all") {
-    displayQuotes(quotes);
+    displayRandomQuote(quotes);
   } else {
     const filtered = quotes.filter(q => q.category === selectedCategory);
-    displayQuotes(filtered);
+    displayRandomQuote(filtered);
   }
 }
 
-// Initialize app
+// Initialize the app
 function init() {
   populateCategories();
-  filterQuotes(); // show filtered (or all) quotes on load
+  filterQuotes(); // show filtered (or all) random quote on load
 }
 
+// Run initialization
 init();
