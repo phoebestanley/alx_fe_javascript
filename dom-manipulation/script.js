@@ -46,7 +46,7 @@ function filterQuotes() {
 }
 
 // =================== ADD NEW QUOTES ===================
-function addQuote(text, category) {
+async function addQuote(text, category) {
   const newQuote = { text, category };
 
   // Save locally
@@ -56,48 +56,66 @@ function addQuote(text, category) {
   displayQuote();
 
   // Sync with server (POST)
-  fetch("https://jsonplaceholder.typicode.com/posts", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(newQuote)
-  })
-  .then(response => response.json())
-  .then(data => {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newQuote)
+    });
+
+    const data = await response.json();
     console.log("Quote synced with server:", data);
-    showNotification("Quote added and synced with server.");
-  })
-  .catch(err => {
+    showNotification("✅ Quote added and synced with server.");
+  } catch (err) {
     console.error("Error posting to server:", err);
-    showNotification("Quote added locally but failed to sync with server.");
-  });
+    showNotification("⚠️ Quote added locally but failed to sync with server.");
+  }
 }
 
 // =================== SERVER SYNC ===================
-function fetchQuotesFromServer() {
-  fetch("https://jsonplaceholder.typicode.com/posts")
-    .then(response => response.json())
-    .then(serverQuotes => {
-      const serverFormatted = serverQuotes.slice(0, 5).map(post => ({
-        text: post.title,
-        category: "Server"
-      }));
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const serverQuotes = await response.json();
 
-      let localTexts = new Set(quotes.map(q => q.text));
-      let newOnes = serverFormatted.filter(q => !localTexts.has(q.text));
-
-      if (newOnes.length > 0) {
-        quotes = [...quotes, ...newOnes];
-        localStorage.setItem("quotes", JSON.stringify(quotes));
-        populateCategories();
-        displayQuote();
-        showNotification("New quotes synced from server.");
-      }
-    })
-    .catch(err => console.error("Error fetching from server:", err));
+    // Simulate server quotes as usable objects
+    return serverQuotes.slice(0, 5).map(post => ({
+      text: post.title,
+      category: "Server"
+    }));
+  } catch (err) {
+    console.error("Error fetching from server:", err);
+    return [];
+  }
 }
 
+// Main Sync Function
+async function syncQuotes() {
+  const serverData = await fetchQuotesFromServer();
+
+  if (serverData.length === 0) return;
+
+  let localTexts = new Set(quotes.map(q => q.text));
+  let serverTexts = new Set(serverData.map(q => q.text));
+
+  // Find new server quotes not in local
+  let newFromServer = serverData.filter(q => !localTexts.has(q.text));
+
+  // Conflict resolution: server takes precedence
+  let mergedQuotes = [...quotes.filter(q => serverTexts.has(q.text)), ...newFromServer];
+
+  if (mergedQuotes.length !== quotes.length) {
+    quotes = mergedQuotes;
+    localStorage.setItem("quotes", JSON.stringify(quotes));
+    populateCategories();
+    displayQuote();
+    showNotification("🔄 Quotes synced with server. Conflicts resolved in favor of server.");
+  }
+}
+
+// =================== UI NOTIFICATIONS ===================
 function showNotification(message) {
   const notif = document.getElementById("notification");
   notif.innerText = message;
@@ -111,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
   displayQuote();
 
   // Auto sync every 15s
-  setInterval(fetchQuotesFromServer, 15000);
+  setInterval(syncQuotes, 15000);
 
   // Add sample form for new quotes
   const formContainer = document.getElementById("formContainer");
@@ -121,5 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
     <button onclick="addQuote(document.getElementById('quoteText').value, document.getElementById('quoteCategory').value)">
       Add Quote
     </button>
+    <button onclick="syncQuotes()">🔄 Sync Now</button>
   `;
 });
